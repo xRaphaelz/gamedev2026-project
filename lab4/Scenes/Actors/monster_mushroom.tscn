@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://b48s52q3f64kl"]
+
+[ext_resource type="PackedScene" uid="uid://d27bcsmx82vfa" path="res://Scenes/Actors/enemy.tscn" id="1_a4af2"]
+[ext_resource type="Script" uid="uid://bx5lotsye1r4s" path="res://Scenes/Actors/monster_small.gd" id="2_tyn28"]
+[ext_resource type="Texture2D" uid="uid://gdujhun2k2fk" path="res://Scenes/Actors/Knight_02__RUN_000.png" id="3_ub1y4"]
+[ext_resource type="Texture2D" uid="uid://b4w7haiekgdku" path="res://Scenes/Actors/Knight_02__RUN_001.png" id="4_b0x8u"]
+[ext_resource type="Texture2D" uid="uid://ba5aogta3ignd" path="res://Scenes/Actors/Knight_02__RUN_002.png" id="5_8g5y5"]
+[ext_resource type="Texture2D" uid="uid://clrs1slx48ol8" path="res://Scenes/Actors/Knight_02__RUN_003.png" id="6_qs8ce"]
+[ext_resource type="Texture2D" uid="uid://urkrwdhpuayo" path="res://Scenes/Actors/Knight_02__RUN_004.png" id="7_oxm22"]
+[ext_resource type="Texture2D" uid="uid://6j3mgsljqimd" path="res://Scenes/Actors/Knight_02__RUN_005.png" id="8_lgsx7"]
+[ext_resource type="Texture2D" uid="uid://coo6gxe0swhld" path="res://Scenes/Actors/Knight_02__RUN_006.png" id="9_1pjpm"]
+[ext_resource type="Texture2D" uid="uid://cvcrbllo8e3pv" path="res://Scenes/Actors/Knight_02__RUN_007.png" id="10_5x8hn"]
+[ext_resource type="Texture2D" uid="uid://dl0r20xy4q2wq" path="res://Scenes/Actors/Knight_02__RUN_008.png" id="11_d1iqb"]
+[ext_resource type="Texture2D" uid="uid://nped7gqdree4" path="res://Scenes/Actors/Knight_02__RUN_009.png" id="12_qnyj8"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l7ctk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ub1y4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_b0x8u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_8g5y5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_qs8ce")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_oxm22")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_lgsx7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_1pjpm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_5x8hn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_d1iqb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_qnyj8")
+}],
+"loop": 1,
+"name": &"mushroom",
+"speed": 10.0
+}]
+
+[node name="Enemy" unique_id=600502477 instance=ExtResource("1_a4af2")]
+script = ExtResource("2_tyn28")
+
+[node name="CollisionShape2D" parent="." index="0" unique_id=587424215]
+position = Vector2(0, -33)
+scale = Vector2(1.5, 1.5)
+
+[node name="CollisionShape2D2" parent="HitArea" parent_id_path=PackedInt32Array(1115411835) index="0" unique_id=2008793250]
+position = Vector2(0, -33)
+scale = Vector2(1.5, 1.5)
+
+[node name="AnimateSprite" type="AnimatedSprite2D" parent="Sprite" parent_id_path=PackedInt32Array(1445111960) index="0" unique_id=87960724]
+position = Vector2(6, -27)
+scale = Vector2(-0.084, 0.115)
+sprite_frames = SubResource("SpriteFrames_l7ctk")
+animation = &"mushroom"
