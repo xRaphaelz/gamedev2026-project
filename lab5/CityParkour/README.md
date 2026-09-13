@@ -5,7 +5,7 @@
 
 | | |
 |---|---|
-| **เล่นบนเว็บ** | `https://<USERNAME>.github.io/gamedev2026-project/lab5/Game/gamelab5.html` |
+| **เล่นบนเว็บ** | `https://xraphaelz.github.io/gamedev2026-project/lab5/Game/gamelab5.html` |
 | **ซอร์สโค้ด** | `lab5/CityParkour/` |
 | **เว็บบิลด์** | `lab5/Game/` |
 
