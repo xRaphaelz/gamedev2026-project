@@ -1,189 +1,343 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ผลงาน Computer Game Development ปี 2026</title>
-    <style>
-        :root {
-            --navy: #101b3d;
-            --blue: #5d7cff;
-            --purple: #9b63ff;
-            --ink: #1d2948;
-            --muted: #69738e;
-            --card: rgba(255, 255, 255, 0.88);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ผลงาน Computer Game Development 2026 — วิษณุ รีชัยพิชิตกุล</title>
+<meta name="description" content="รวมผลงานและภารกิจรายวิชา Computer Game Development ปี 2026">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c14;
+  --bg-2:#0f1320;
+  --surface:rgba(255,255,255,.045);
+  --surface-2:rgba(255,255,255,.07);
+  --line:rgba(255,255,255,.10);
+  --line-strong:rgba(255,255,255,.18);
+  --text:#eef1f8;
+  --muted:#98a1b8;
+  --dim:#6b7489;
+  --cyan:#4ee0d0;
+  --violet:#8b7bff;
+  --pink:#ff77c8;
+  --amber:#ffc857;
+  --radius:20px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  padding:0 20px 64px;
+  font-family:"IBM Plex Sans Thai","Segoe UI",Tahoma,sans-serif;
+  font-size:16px;
+  line-height:1.65;
+  color:var(--text);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
 
-        * { box-sizing: border-box; }
+/* ---------- ambient background ---------- */
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.aurora::before,.aurora::after{
+  content:"";position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;
+}
+.aurora::before{
+  width:min(620px,70vw);height:min(620px,70vw);top:-14%;left:-8%;
+  background:radial-gradient(circle,#5b46d6 0,transparent 68%);
+  animation:drift1 24s ease-in-out infinite;
+}
+.aurora::after{
+  width:min(560px,64vw);height:min(560px,64vw);top:6%;right:-10%;
+  background:radial-gradient(circle,#1b8f9e 0,transparent 68%);
+  animation:drift2 30s ease-in-out infinite;
+}
+.grid-overlay{
+  position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.4;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 40%,transparent 100%);
+}
+@keyframes drift1{50%{transform:translate(60px,50px) scale(1.12)}}
+@keyframes drift2{50%{transform:translate(-70px,40px) scale(1.08)}}
 
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 48px 20px;
-            font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at 8% 5%, #d9e4ff 0, transparent 28rem),
-                radial-gradient(circle at 95% 18%, #ecdfff 0, transparent 27rem),
-                #f5f7ff;
-        }
+.wrap{max-width:1080px;margin:0 auto}
 
-        .container {
-            max-width: 920px;
-            margin: 0 auto;
-        }
+/* ---------- hero ---------- */
+.hero{padding:84px 0 40px;text-align:center}
+.kicker{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 15px 7px 11px;margin-bottom:22px;
+  border:1px solid var(--line-strong);border-radius:999px;
+  background:var(--surface);backdrop-filter:blur(12px);
+  font-family:"Space Grotesk",sans-serif;font-size:.74rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:#cdd5e6;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+h1{
+  margin:0;
+  font-family:"Space Grotesk","IBM Plex Sans Thai",sans-serif;
+  font-size:clamp(2.3rem,6.2vw,4.1rem);
+  font-weight:700;line-height:1.08;letter-spacing:-.02em;
+  background:linear-gradient(100deg,#ffffff 8%,#b9a7ff 46%,#5fe3d4 92%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero h1 .th{font-family:"IBM Plex Sans Thai",sans-serif;font-weight:700}
+.tagline{margin:16px auto 0;max-width:52ch;color:var(--muted);font-size:1.03rem}
 
-        .hero {
-            position: relative;
-            overflow: hidden;
-            padding: 42px;
-            border-radius: 24px;
-            color: white;
-            background: linear-gradient(135deg, var(--navy), #253d85 58%, #6540a8);
-            box-shadow: 0 18px 45px rgba(32, 48, 106, 0.25);
-        }
+/* ---------- identity strip ---------- */
+.identity{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  margin:36px 0 54px;padding:18px 22px;
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--surface-2),var(--surface));
+  backdrop-filter:blur(14px);
+}
+.avatar{
+  flex:none;display:grid;place-items:center;width:54px;height:54px;border-radius:16px;
+  background:linear-gradient(140deg,var(--violet),var(--cyan));
+  color:#0a0c14;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1.32rem;
+}
+.identity .who{flex:1 1 220px;min-width:0}
+.identity .name{font-weight:600;font-size:1.12rem;line-height:1.3}
+.identity .sid{color:var(--dim);font-size:.9rem;font-family:"Space Grotesk",sans-serif;letter-spacing:.04em}
+.counts{display:flex;gap:26px;flex:none}
+.count b{
+  display:block;font-family:"Space Grotesk",sans-serif;font-size:1.5rem;line-height:1.1;
+  background:linear-gradient(160deg,#fff,#9d8dff);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.count span{font-size:.78rem;color:var(--dim);letter-spacing:.02em}
 
-        .hero::after {
-            content: "✦";
-            position: absolute;
-            right: 40px;
-            bottom: -38px;
-            font-size: 170px;
-            color: rgba(255, 255, 255, 0.1);
-        }
+/* ---------- section head ---------- */
+.section-head{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.section-head h2{
+  margin:0;font-family:"Space Grotesk","IBM Plex Sans Thai",sans-serif;
+  font-size:1.18rem;font-weight:700;letter-spacing:.02em;
+}
+.section-head .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent)}
 
-        .badge {
-            display: inline-block;
-            margin-bottom: 12px;
-            padding: 7px 12px;
-            border: 1px solid rgba(255,255,255,.24);
-            border-radius: 99px;
-            background: rgba(255,255,255,.12);
-            font-size: .8rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-        }
+/* ---------- lab grid ---------- */
+.labs{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;padding:0;margin:0;list-style:none}
+.card{
+  --accent:var(--violet);
+  position:relative;display:flex;flex-direction:column;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(180deg,var(--surface-2),rgba(255,255,255,.02));
+  transition:transform .25s cubic-bezier(.2,.7,.3,1),border-color .25s,box-shadow .25s;
+}
+.card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent) 55%,transparent);box-shadow:0 22px 46px -22px rgba(0,0,0,.85),0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent)}
+.card::before{
+  content:"";position:absolute;inset:0 0 auto;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity:.55;transition:opacity .25s;
+}
+.card:hover::before{opacity:1}
 
-        h1 { margin: 0; font-size: clamp(1.8rem, 5vw, 2.8rem); }
-        .subtitle { margin: 10px 0 0; color: #dce5ff; font-size: 1.05rem; }
+.thumb{
+  position:relative;height:112px;display:grid;place-items:center;overflow:hidden;
+  background:
+    radial-gradient(120% 150% at 15% 0%,color-mix(in srgb,var(--accent) 34%,transparent) 0,transparent 62%),
+    linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,0));
+  border-bottom:1px solid var(--line);
+}
+.thumb::after{
+  content:"";position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:26px 26px;
+  mask-image:linear-gradient(160deg,#000,transparent 78%);
+  -webkit-mask-image:linear-gradient(160deg,#000,transparent 78%);
+}
+.thumb .num{
+  position:relative;z-index:1;
+  font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:3.1rem;line-height:1;
+  color:transparent;-webkit-text-stroke:1.4px color-mix(in srgb,var(--accent) 78%,#fff 22%);
+  opacity:.92;letter-spacing:.02em;
+}
+.badge{
+  position:absolute;top:12px;right:12px;z-index:2;
+  padding:4px 10px;border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.02em;
+  border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);
+  background:color-mix(in srgb,var(--accent) 16%,#0a0c14);
+  color:color-mix(in srgb,var(--accent) 70%,#fff);
+}
+.badge.wip{border-color:rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--dim)}
 
-        .student {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 28px 0 22px;
-            padding: 18px 22px;
-            border-radius: 16px;
-            background: var(--card);
-            box-shadow: 0 8px 25px rgba(42, 52, 91, 0.08);
-        }
+.body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1;gap:10px}
+.eyebrow{font-family:"Space Grotesk",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb,var(--accent) 62%,#fff)}
+.card h3{margin:0;font-size:1.16rem;font-weight:600;line-height:1.35}
+.desc{margin:0;color:var(--muted);font-size:.92rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.tag{padding:3px 9px;border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.03);font-size:.74rem;color:var(--dim)}
 
-        .student strong { color: var(--blue); }
-        .divider { color: #b1b8c9; }
+.actions{margin-top:auto;padding-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 16px;border-radius:11px;text-decoration:none;
+  font-size:.9rem;font-weight:600;
+  color:#0a0c14;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 88%,#fff),color-mix(in srgb,var(--accent) 55%,#fff));
+  transition:filter .2s,transform .2s;
+}
+.btn:hover{filter:brightness(1.1);transform:translateX(2px)}
+.btn .arw{transition:transform .2s}
+.btn:hover .arw{transform:translateX(3px)}
+.btn.ghost{
+  color:var(--text);background:rgba(255,255,255,.05);
+  border:1px solid var(--line-strong);
+}
+.btn.ghost:hover{background:rgba(255,255,255,.09)}
+.soon{margin-top:auto;padding-top:14px;color:var(--dim);font-size:.88rem;display:flex;align-items:center;gap:8px}
+.soon .pulse{width:7px;height:7px;border-radius:50%;background:var(--dim);animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
 
-        .labs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
+.card.pending{background:rgba(255,255,255,.02);border-style:dashed}
+.card.pending .thumb .num{opacity:.4}
 
-        .lab-card {
-            display: flex;
-            flex-direction: column;
-            min-height: 154px;
-            padding: 23px;
-            border: 1px solid rgba(117, 135, 190, .18);
-            border-radius: 18px;
-            background: var(--card);
-            box-shadow: 0 8px 22px rgba(42, 52, 91, .07);
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
+/* accents */
+.c1{--accent:#5fb6ff}
+.c2{--accent:#ff9f6b}
+.c3{--accent:#ff77c8}
+.c4{--accent:#ffc857}
+.c5{--accent:#4ee0d0}
+.c6{--accent:#8b7bff}
 
-        .lab-card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(42, 52, 91, .14); }
-        .lab-number { color: var(--purple); font-weight: 800; font-size: .85rem; text-transform: uppercase; }
-        .lab-title { margin: 8px 0 16px; font-weight: 700; font-size: 1.18rem; }
-        .lab-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: fit-content;
-            margin-top: auto;
-            padding: 9px 13px;
-            border-radius: 9px;
-            color: white;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            font-size: .92rem;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .lab-link:hover { filter: brightness(1.08); }
-        .lab-link::after { content: "→"; font-size: 1.1rem; }
+footer{
+  margin-top:56px;padding-top:26px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  color:var(--dim);font-size:.86rem;
+}
+footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
+footer a:hover{border-bottom-color:var(--muted)}
 
-        .mission-list { display: grid; gap: 9px; margin-top: auto; }
-        .mission-link { color: var(--blue); font-size: .94rem; font-weight: 600; text-decoration: none; }
-        .mission-link:hover { text-decoration: underline; }
-
-        .coming-soon { color: var(--muted); font-size: .95rem; margin-top: auto; }
-
-        footer { margin-top: 28px; color: var(--muted); text-align: center; font-size: .9rem; }
-
-        @media (max-width: 560px) {
-            body { padding: 24px 15px; }
-            .hero { padding: 30px 24px; }
-            .student { display: block; line-height: 1.8; }
-            .divider { display: none; }
-        }
-    </style>
+@media (max-width:640px){
+  body{padding:0 16px 48px}
+  .hero{padding:56px 0 30px}
+  .identity{margin:28px 0 40px}
+  .counts{width:100%;justify-content:space-between;gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto}
+}
+</style>
 </head>
 <body>
-    <main class="container">
-        <section class="hero">
-            <div class="badge">GAME DEVELOPMENT PORTFOLIO</div>
-            <h1>ผลงาน Computer Game Development</h1>
-            <p class="subtitle">รวมผลงานและภารกิจประจำปี 2026</p>
-        </section>
+<div class="aurora"></div>
+<div class="grid-overlay"></div>
 
-        <p class="student"><strong>รหัส:</strong> 673380531-3 <span class="divider">|</span> <strong>ชื่อ:</strong> นายวิษณุ รีชัยพิชิตกุล</p>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker"><span class="dot"></span>Game Development Portfolio · 2026</div>
+    <h1><span class="th">ผลงาน</span> Computer<br>Game Development</h1>
+    <p class="tagline">รวมภารกิจและเกมทั้งหมดของรายวิชา — กดที่การ์ดเพื่อเล่นหรือดูผลงานแต่ละชิ้นได้เลย</p>
+  </header>
 
-        <ul class="labs">
-            <li class="lab-card">
-                <span class="lab-number">Lab 01</span>
-                <div class="lab-title">แนะนำตัวเอง</div>
-                <a class="lab-link" href="lab1.html">ดูผลงาน</a>
-            </li>
-            <li class="lab-card">
-                <span class="lab-number">Lab 02</span>
-                <div class="lab-title">My First 2D Game</div>
-                <div class="mission-list">
-                    <a class="mission-link" href="lab2/lab2-1/lab2-1.html">ภารกิจ 1: game21.html</a>
-                    <a class="mission-link" href="lab2/lab2-2/finish.html">ภารกิจ 2: finish.html</a>
-                </div>
-            </li>
-            <li class="lab-card">
-                <span class="lab-number">Lab 03</span>
-                <div class="lab-title">Game 3</div>
-                <a class="lab-link" href="lab3/lab3.html">ดูผลงาน</a>
-            </li>
-            <li class="lab-card">
-                <span class="lab-number">Lab 04</span>
-                <div class="lab-title">Lab 4</div>
-                <a class="lab-link" href="lab4/Game/gamelab4.html">ดูผลงาน</a>
-            </li>
-            <li class="lab-card">
-                <span class="lab-number">Lab 05</span>
-                <div class="lab-title">First 3D Game: City Parkour</div>
-                <a class="lab-link" href="lab5/Game/gamelab5.html">ดูผลงาน</a>
-            </li>
-            <li class="lab-card">
-                <span class="lab-number">Lab 06</span>
-                <div class="lab-title">Lab 6</div>
-                <div class="coming-soon">กำลังจัดเตรียมผลงาน</div>
-            </li>
-        </ul>
-        <footer>© 2026 Computer Game Development</footer>
-    </main>
+  <section class="identity">
+    <div class="avatar">ว</div>
+    <div class="who">
+      <div class="name">นายวิษณุ รีชัยพิชิตกุล</div>
+      <div class="sid">673380531-3</div>
+    </div>
+    <div class="counts">
+      <div class="count"><b>6</b><span>ภารกิจ</span></div>
+      <div class="count"><b>5</b><span>ส่งแล้ว</span></div>
+      <div class="count"><b>1</b><span>กำลังทำ</span></div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <h2>ภารกิจทั้งหมด</h2>
+    <div class="rule"></div>
+  </div>
+
+  <ul class="labs">
+
+    <li class="card c1">
+      <div class="thumb"><span class="num">01</span><span class="badge">ส่งแล้ว</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 01</div>
+        <h3>แนะนำตัวเอง</h3>
+        <p class="desc">หน้าเว็บแนะนำตัวชิ้นแรกของรายวิชา</p>
+        <div class="tags"><span class="tag">HTML</span><span class="tag">CSS</span></div>
+        <div class="actions">
+          <a class="btn" href="lab1.html">ดูผลงาน <span class="arw">→</span></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="card c2">
+      <div class="thumb"><span class="num">02</span><span class="badge">ส่งแล้ว</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 02</div>
+        <h3>My First 2D Game</h3>
+        <p class="desc">เกม 2D ชิ้นแรก แบ่งเป็นสองภารกิจย่อย</p>
+        <div class="tags"><span class="tag">2D</span><span class="tag">2 ภารกิจ</span></div>
+        <div class="actions">
+          <a class="btn" href="lab2/lab2-1/lab2-1.html">ภารกิจ 1 <span class="arw">→</span></a>
+          <a class="btn ghost" href="lab2/lab2-2/finish.html">ภารกิจ 2 <span class="arw">→</span></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="card c3">
+      <div class="thumb"><span class="num">03</span><span class="badge">ส่งแล้ว</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 03</div>
+        <h3>Game 3</h3>
+        <p class="desc">ภารกิจที่สามของรายวิชา</p>
+        <div class="tags"><span class="tag">Web</span></div>
+        <div class="actions">
+          <a class="btn" href="lab3/lab3.html">ดูผลงาน <span class="arw">→</span></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="card c4">
+      <div class="thumb"><span class="num">04</span><span class="badge">ส่งแล้ว</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 04</div>
+        <h3>Lab 4</h3>
+        <p class="desc">เกมที่สร้างด้วย Godot และ export เป็นเว็บ</p>
+        <div class="tags"><span class="tag">Godot</span><span class="tag">HTML5</span></div>
+        <div class="actions">
+          <a class="btn" href="lab4/Game/gamelab4.html">เล่นเกม <span class="arw">→</span></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="card c5">
+      <div class="thumb"><span class="num">05</span><span class="badge">ใหม่ล่าสุด</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 05</div>
+        <h3>First 3D Game — City Parkour</h3>
+        <p class="desc">เกม 3D platformer ธีมเมือง 2 ด่าน วิ่งข้ามดาดฟ้าและฝ่าถนนยามค่ำ เก็บเหรียญให้ครบเพื่อปลดล็อกประตู</p>
+        <div class="tags"><span class="tag">Godot 4.7.2</span><span class="tag">3D</span><span class="tag">2 ด่าน</span><span class="tag">Poly Pizza</span></div>
+        <div class="actions">
+          <a class="btn" href="lab5/Game/gamelab5.html">เล่นเกม <span class="arw">→</span></a>
+          <a class="btn ghost" href="https://github.com/xraphaelz/gamedev2026-project/tree/main/lab5/CityParkour" target="_blank" rel="noopener">ซอร์สโค้ด <span class="arw">↗</span></a>
+        </div>
+      </div>
+    </li>
+
+    <li class="card c6 pending">
+      <div class="thumb"><span class="num">06</span><span class="badge wip">กำลังทำ</span></div>
+      <div class="body">
+        <div class="eyebrow">Lab 06</div>
+        <h3>Lab 6</h3>
+        <p class="desc">ยังไม่เริ่ม — จะอัปเดตเมื่อส่งงาน</p>
+        <div class="soon"><span class="pulse"></span>กำลังจัดเตรียมผลงาน</div>
+      </div>
+    </li>
+
+  </ul>
+
+  <footer>
+    <span>© 2026 Computer Game Development</span>
+    <span>เผยแพร่ผ่าน <a href="https://github.com/xraphaelz/gamedev2026-project" target="_blank" rel="noopener">GitHub Pages</a></span>
+  </footer>
+</div>
 </body>
 </html>
