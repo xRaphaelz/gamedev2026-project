@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://0pjgm6v8nsbk"
+path="res://.godot/imported/BusStop.obj-aee295c10dc4f922f8850bcd0328b06b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/BusStop.obj-aee295c10dc4f922f8850bcd0328b06b.mesh"]
+
+source_file="res://Assets/City/BusStop/BusStop.obj"
+dest_files=["res://.godot/imported/BusStop.obj-aee295c10dc4f922f8850bcd0328b06b.mesh", "res://.godot/imported/BusStop.obj-aee295c10dc4f922f8850bcd0328b06b.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

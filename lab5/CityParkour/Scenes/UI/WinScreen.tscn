@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/WinScreen.gd" id="1_pj8m8"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/Sarabun-Bold.ttf" id="2_2tjps"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/Sarabun-Regular.ttf" id="3_3i2rc"]
+
+[node name="WinScreen" type="Control" unique_id=134786810]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_pj8m8")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1386948034]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.07, 0.08, 0.13, 1)
+
+[node name="Panel" type="CenterContainer" parent="." unique_id=2105880375]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=634415186]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=1810950874]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.996, 0.75, 0.28, 1)
+theme_override_fonts/font = ExtResource("2_2tjps")
+theme_override_font_sizes/font_size = 64
+text = "ผ่านทุกด่านแล้ว!"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Panel/VBox" unique_id=640511515]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.83, 0.95, 1)
+theme_override_fonts/font = ExtResource("3_3i2rc")
+theme_override_font_sizes/font_size = 22
+text = "คุณเก็บไอเท็มครบและไปถึงประตูสุดท้ายได้สำเร็จ"
+horizontal_alignment = 1
+
+[node name="MenuButton" type="Button" parent="Panel/VBox" unique_id=662060514]
+custom_minimum_size = Vector2(360, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_2tjps")
+theme_override_font_sizes/font_size = 28
+text = "กลับเมนูหลัก"

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Checkpoint.gd" id="1_xavia"]
+[ext_resource type="PackedScene" path="res://Assets/Models/flag.glb" id="2_feilj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_6o0tf"]
+size = Vector3(2, 2.4, 2)
+
+[node name="Checkpoint" type="Area3D" unique_id=684425648]
+script = ExtResource("1_xavia")
+
+[node name="Flag" type="Node3D" parent="." unique_id=1670897232 instance=ExtResource("2_feilj")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+
+[node name="Shape" type="CollisionShape3D" parent="." unique_id=2058223176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("BoxShape3D_6o0tf")
+
+[node name="Light" type="OmniLight3D" parent="." unique_id=423113121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+light_color = Color(1, 0.8, 0.35, 1)
+light_energy = 1.6

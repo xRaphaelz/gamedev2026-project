@@ -1,0 +1,76 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/MainMenu.gd" id="1_72sra"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/Sarabun-Bold.ttf" id="2_t6w0q"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/Sarabun-Regular.ttf" id="3_k8um8"]
+
+[node name="MainMenu" type="Control" unique_id=1872396264]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_72sra")
+
+[node name="Background" type="ColorRect" parent="." unique_id=423826577]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.07, 0.08, 0.13, 1)
+
+[node name="Panel" type="CenterContainer" parent="." unique_id=530542862]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1480797133]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=174468453]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.996, 0.75, 0.28, 1)
+theme_override_fonts/font = ExtResource("2_t6w0q")
+theme_override_font_sizes/font_size = 64
+text = "CITY PARKOUR"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Panel/VBox" unique_id=683039408]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.83, 0.95, 1)
+theme_override_fonts/font = ExtResource("3_k8um8")
+theme_override_font_sizes/font_size = 22
+text = "วิ่ง กระโดด เก็บเหรียญให้ครบ แล้วหาประตูไปด่านถัดไป
+WASD = เดิน · SPACE = กระโดด (กดซ้ำ = Double Jump) · R = เริ่มใหม่"
+horizontal_alignment = 1
+
+[node name="PlayButton" type="Button" parent="Panel/VBox" unique_id=181069823]
+custom_minimum_size = Vector2(360, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_t6w0q")
+theme_override_font_sizes/font_size = 28
+text = "เริ่มเกม (ด่าน 1 - Rooftop Run)"
+
+[node name="Level2Button" type="Button" parent="Panel/VBox" unique_id=376181106]
+custom_minimum_size = Vector2(360, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_t6w0q")
+theme_override_font_sizes/font_size = 28
+text = "ด่าน 2 - Night Street"
+
+[node name="QuitButton" type="Button" parent="Panel/VBox" unique_id=80449296]
+custom_minimum_size = Vector2(360, 64)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_t6w0q")
+theme_override_font_sizes/font_size = 28
+text = "ออกจากเกม"
+
+[node name="Credits" type="Label" parent="Panel/VBox" unique_id=454560782]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.6, 0.72, 1)
+theme_override_fonts/font = ExtResource("3_k8um8")
+theme_override_font_sizes/font_size = 16
+text = "Starter Kit: 3D Platformer Starter Kit (SD Studios)
+Models: Poly Pizza - City Pack & Animated Woman (Quaternius)
+Font: Sarabun (SIL OFL)"
+horizontal_alignment = 1

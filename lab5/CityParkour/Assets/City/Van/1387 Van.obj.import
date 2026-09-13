@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bhh2y17qd0w7a"
+path="res://.godot/imported/1387 Van.obj-0e618ddf95b7ed1224edc2df5b07117c.mesh"
+
+[deps]
+
+files=["res://.godot/imported/1387 Van.obj-0e618ddf95b7ed1224edc2df5b07117c.mesh"]
+
+source_file="res://Assets/City/Van/1387 Van.obj"
+dest_files=["res://.godot/imported/1387 Van.obj-0e618ddf95b7ed1224edc2df5b07117c.mesh", "res://.godot/imported/1387 Van.obj-0e618ddf95b7ed1224edc2df5b07117c.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

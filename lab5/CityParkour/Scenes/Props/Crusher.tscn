@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Crusher.gd" id="1_p7jep"]
+[ext_resource type="Script" path="res://Scripts/Hazard.gd" id="2_3ibd0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bhrg"]
+albedo_color = Color(0.35, 0.36, 0.4, 1)
+metallic = 0.4
+roughness = 0.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_efuq7"]
+size = Vector3(2.4, 2, 2.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cy485"]
+size = Vector3(2.4, 2, 2.4)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lv2cq"]
+albedo_color = Color(0.95, 0.25, 0.2, 1)
+metallic = 0.1
+roughness = 0.5
+emission_enabled = true
+emission = Color(0.5, 0.05, 0.03, 1)
+emission_energy_multiplier = 1.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_0erfx"]
+size = Vector3(2.5, 0.25, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p72ul"]
+size = Vector3(2.5, 0.5, 2.5)
+
+[node name="Crusher" type="AnimatableBody3D" unique_id=174592317]
+script = ExtResource("1_p7jep")
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=645522205]
+material_override = SubResource("StandardMaterial3D_4bhrg")
+mesh = SubResource("BoxMesh_efuq7")
+
+[node name="Shape" type="CollisionShape3D" parent="." unique_id=1705951236]
+shape = SubResource("BoxShape3D_cy485")
+
+[node name="Spikes" type="MeshInstance3D" parent="." unique_id=1051681433]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.05, 0)
+material_override = SubResource("StandardMaterial3D_lv2cq")
+mesh = SubResource("BoxMesh_0erfx")
+
+[node name="Hazard" type="Area3D" parent="." unique_id=1974461818]
+script = ExtResource("2_3ibd0")
+
+[node name="Shape" type="CollisionShape3D" parent="Hazard" unique_id=1610853933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.1, 0)
+shape = SubResource("BoxShape3D_p72ul")

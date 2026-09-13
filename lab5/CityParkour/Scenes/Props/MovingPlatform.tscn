@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/MovingPlatform.gd" id="1_nn7ms"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hec3j"]
+albedo_color = Color(0.98, 0.66, 0.18, 1)
+metallic = 0.15
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_kqxvc"]
+size = Vector3(3.6, 0.5, 3.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d107o"]
+size = Vector3(3.6, 0.5, 3.6)
+
+[node name="MovingPlatform" type="AnimatableBody3D" unique_id=2098781067]
+script = ExtResource("1_nn7ms")
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=547787703]
+material_override = SubResource("StandardMaterial3D_hec3j")
+mesh = SubResource("BoxMesh_kqxvc")
+
+[node name="Shape" type="CollisionShape3D" parent="." unique_id=1686742840]
+shape = SubResource("BoxShape3D_d107o")
