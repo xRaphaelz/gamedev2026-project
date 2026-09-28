@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/Demo.gd" id="1_hrj8l"]
+[ext_resource type="PackedScene" path="res://Character/RobloxChar_Mixamo.glb" id="2_vesec"]
+[ext_resource type="Script" path="res://Scripts/OrbitCamera.gd" id="3_4vemg"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lpcab"]
+sky_top_color = Color(0.05, 0.06, 0.12, 1)
+sky_horizon_color = Color(0.16, 0.14, 0.26, 1)
+ground_bottom_color = Color(0.03, 0.03, 0.05, 1)
+ground_horizon_color = Color(0.12, 0.11, 0.2, 1)
+
+[sub_resource type="Sky" id="Sky_fnnck"]
+sky_material = SubResource("ProceduralSkyMaterial_lpcab")
+
+[sub_resource type="Environment" id="Environment_ecetj"]
+background_mode = 2
+sky = SubResource("Sky_fnnck")
+ambient_light_source = 3
+ambient_light_energy = 0.7
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+glow_intensity = 0.35
+fog_enabled = true
+fog_light_color = Color(0.12, 0.11, 0.2, 1)
+fog_density = 0.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oilx1"]
+albedo_color = Color(0.07, 0.07, 0.11, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4i7ud"]
+size = Vector2(400, 400)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ymvx6"]
+albedo_color = Color(0.13, 0.13, 0.19, 1)
+roughness = 0.92
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_v3boh"]
+top_radius = 1.7
+bottom_radius = 1.8
+height = 0.12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h3puh"]
+albedo_color = Color(0.3, 0.75, 0.7, 1)
+roughness = 0.4
+emission_enabled = true
+emission = Color(0.15, 0.55, 0.5, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="TorusMesh" id="TorusMesh_k27g2"]
+inner_radius = 1.73
+outer_radius = 1.76
+
+[node name="Demo" type="Node3D" unique_id=857419438]
+script = ExtResource("1_hrj8l")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2097106314]
+environment = SubResource("Environment_ecetj")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="." unique_id=2128986583]
+transform = Transform3D(0.81915206, -0.4262504, 0.38379753, 0, 0.66913056, 0.74314487, -0.57357645, -0.6087487, 0.54811966, 0, 0, 0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 1.4
+shadow_enabled = true
+
+[node name="RimLight" type="DirectionalLight3D" parent="." unique_id=1594025858]
+transform = Transform3D(-0.9396926, 0.11697777, -0.32139382, 0, 0.9396926, 0.34202012, 0.34202015, 0.3213938, -0.8830222, 0, 0, 0)
+light_color = Color(0.45, 0.85, 1, 1)
+light_energy = 0.6
+light_specular = 0.0
+
+[node name="Stage" type="Node3D" parent="." unique_id=1695405875]
+
+[node name="Floor" type="MeshInstance3D" parent="Stage" unique_id=176552612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, 0)
+material_override = SubResource("StandardMaterial3D_oilx1")
+mesh = SubResource("PlaneMesh_4i7ud")
+
+[node name="Platform" type="MeshInstance3D" parent="Stage" unique_id=228246683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.06, 0)
+material_override = SubResource("StandardMaterial3D_ymvx6")
+mesh = SubResource("CylinderMesh_v3boh")
+
+[node name="GlowRing" type="MeshInstance3D" parent="Stage" unique_id=2010298252]
+material_override = SubResource("StandardMaterial3D_h3puh")
+mesh = SubResource("TorusMesh_k27g2")
+
+[node name="Character" type="Node3D" parent="." unique_id=1232817733 instance=ExtResource("2_vesec")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Character" unique_id=789814292]
+
+[node name="CameraRig" type="Node3D" parent="." unique_id=41657489]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("3_4vemg")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=455402349]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.8)
+h_offset = -0.95
+v_offset = -0.25
+current = true
+fov = 40.0

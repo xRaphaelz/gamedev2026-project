@@ -109,6 +109,22 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
+		<script>
+// โหลด index.wasm.gz (≈10 MB) แทน index.wasm (≈40 MB) แล้วแตกไฟล์ในเบราว์เซอร์
+(function () {
+	if (!('DecompressionStream' in window)) return;
+	const origFetch = window.fetch.bind(window);
+	window.fetch = function (input, init) {
+		const url = typeof input === 'string' ? input : (input && input.url) || '';
+		if (!/index\.wasm(\?|$)/.test(url)) return origFetch(input, init);
+		return origFetch(url.replace('index.wasm', 'index.wasm.gz'), init).then(function (r) {
+			if (!r.ok) return origFetch(input, init);
+			return new Response(r.body.pipeThrough(new DecompressionStream('gzip')), {
+				status: 200, headers: { 'Content-Type': 'application/wasm' } });
+		}).catch(function () { return origFetch(input, init); });
+	};
+})();
+</script>
 		<script src="index.js"></script>
 		<script>
 const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":4291016,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
