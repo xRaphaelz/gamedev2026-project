@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="Recipe" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_be1lr"]
+[ext_resource type="Texture2D" path="res://assets/icons/dish_tam_corn.png" id="icon_1"]
+
+[resource]
+script = ExtResource("1_be1lr")
+id = "tam_corn"
+icon = ExtResource("icon_1")
+display_name = "ตำข้าวโพด"
+ingredients = {
+"chili": 1,
+"corn": 1,
+"peanut": 1,
+"tomato": 1
+}
+pound_hits = 8
+score = 25
+unlock_chapter = 3
+dish_color = Color(1, 0.85, 0.3, 1)

@@ -1,0 +1,388 @@
+[gd_scene format=3 uid="uid://btamhaistage1"]
+
+[ext_resource type="Script" path="res://scripts/stage.gd" id="1_r"]
+[ext_resource type="PackedScene" path="res://assets/models/env/ground.glb" id="2_r"]
+[ext_resource type="PackedScene" path="res://assets/models/env/shophouses.glb" id="3_r"]
+[ext_resource type="PackedScene" path="res://assets/models/env/stall.glb" id="4_r"]
+[ext_resource type="PackedScene" path="res://assets/models/env/bulbs.glb" id="5_r"]
+[ext_resource type="PackedScene" path="res://assets/models/env/tree.glb" id="6_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/umbrella.glb" id="7_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/plastic_table.glb" id="8_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/plastic_stool_blue.glb" id="9_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/plastic_stool.glb" id="10_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/motorbike.glb" id="11_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/cooler.glb" id="12_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/crate_stack.glb" id="13_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/plant_pot.glb" id="14_r"]
+[ext_resource type="FontFile" path="res://assets/fonts/Kanit-Medium.ttf" id="15_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/counter_tray.glb" id="16_r"]
+[ext_resource type="Script" path="res://scripts/stations/crate_station.gd" id="17_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/counter_board.glb" id="18_r"]
+[ext_resource type="Script" path="res://scripts/stations/chop_station.gd" id="19_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/counter.glb" id="20_r"]
+[ext_resource type="Script" path="res://scripts/stations/station.gd" id="21_r"]
+[ext_resource type="Script" path="res://scripts/stations/mortar_station.gd" id="22_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/trash.glb" id="23_r"]
+[ext_resource type="Script" path="res://scripts/stations/trash_station.gd" id="24_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/counter_serve.glb" id="25_r"]
+[ext_resource type="Script" path="res://scripts/stations/serve_station.gd" id="26_r"]
+[ext_resource type="PackedScene" path="res://assets/models/props/counter_plates.glb" id="27_r"]
+[ext_resource type="Script" path="res://scripts/stations/plate_station.gd" id="28_r"]
+
+[sub_resource type="Environment" id="env"]
+background_mode = 1
+background_color = Color(0.75, 0.85, 0.95, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.9, 0.92, 1, 1)
+ambient_light_energy = 0.45
+
+[sub_resource type="BoxShape3D" id="floor_shape"]
+size = Vector3(40, 0.2, 30)
+
+[node name="Stage" type="Node3D"]
+script = ExtResource("1_r")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 10, 0)
+shadow_enabled = true
+directional_shadow_max_distance = 40.0
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.1, 0)
+shape = SubResource("floor_shape")
+
+[node name="Env" type="Node3D" parent="."]
+
+[node name="Ground" parent="Env" instance=ExtResource("2_r")]
+
+[node name="Shophouses" parent="Env" instance=ExtResource("3_r")]
+
+[node name="Stall" parent="Env" instance=ExtResource("4_r")]
+
+[node name="Bulbs" parent="Env" instance=ExtResource("5_r")]
+
+[node name="Tree1" parent="Env" instance=ExtResource("6_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -9.5, 0, -4.9)
+
+[node name="Tree2" parent="Env" instance=ExtResource("6_r")]
+transform = Transform3D(0.766, 0, 0.6428, 0, 1, 0, -0.6428, 0, 0.766, 9.6, 0, -4.9)
+
+[node name="Tree3" parent="Env" instance=ExtResource("6_r")]
+transform = Transform3D(0.1736, 0, 0.9848, 0, 1, 0, -0.9848, 0, 0.1736, -12, 0, 4)
+
+[node name="Tree4" parent="Env" instance=ExtResource("6_r")]
+transform = Transform3D(0.9848, 0, 0.1736, 0, 1, 0, -0.1736, 0, 0.9848, 12.2, 0, 3)
+
+[node name="UmbrellaL" parent="Env" instance=ExtResource("7_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8, 0, 1.4)
+
+[node name="TableL" parent="Env" instance=ExtResource("8_r")]
+transform = Transform3D(0.9659, 0, 0.2588, 0, 1, 0, -0.2588, 0, 0.9659, -8, 0, 1.4)
+
+[node name="StoolL1" parent="Env" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8.65, 0, 1.3)
+
+[node name="StoolL2" parent="Env" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -7.35, 0, 1.6)
+
+[node name="UmbrellaR" parent="Env" instance=ExtResource("7_r")]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 8.2, 0, 1.8)
+
+[node name="TableR" parent="Env" instance=ExtResource("8_r")]
+transform = Transform3D(0.9848, 0, -0.1736, 0, 1, 0, 0.1736, 0, 0.9848, 8.2, 0, 1.8)
+
+[node name="StoolR1" parent="Env" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 7.55, 0, 1.9)
+
+[node name="StoolR2" parent="Env" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8.85, 0, 1.6)
+
+[node name="Motorbike1" parent="Env" instance=ExtResource("11_r")]
+transform = Transform3D(0.9397, 0, 0.342, 0, 1, 0, -0.342, 0, 0.9397, -7, 0, 4.9)
+
+[node name="Motorbike2" parent="Env" instance=ExtResource("11_r")]
+transform = Transform3D(-0.9397, 0, -0.342, 0, 1, 0, 0.342, 0, -0.9397, 9.3, 0, 5.2)
+
+[node name="Cooler" parent="Env" instance=ExtResource("12_r")]
+transform = Transform3D(0.9848, 0, 0.1736, 0, 1, 0, -0.1736, 0, 0.9848, 6, 0, -2.7)
+
+[node name="Crates" parent="Env" instance=ExtResource("13_r")]
+transform = Transform3D(0.9659, 0, -0.2588, 0, 1, 0, 0.2588, 0, 0.9659, 6.1, 0, -1.3)
+
+[node name="Plant1" parent="Env" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.7, 0, 3.4)
+
+[node name="Plant2" parent="Env" instance=ExtResource("14_r")]
+transform = Transform3D(0.5, 0, 0.866, 0, 1, 0, -0.866, 0, 0.5, -5.7, 0, 3.4)
+
+[node name="Plant3" parent="Env" instance=ExtResource("14_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -6.2, 0, -5.4)
+
+[node name="Plant4" parent="Env" instance=ExtResource("14_r")]
+transform = Transform3D(0.9397, 0, 0.342, 0, 1, 0, -0.342, 0, 0.9397, 3, 0, -5.4)
+
+[node name="Crates2" parent="Env" instance=ExtResource("13_r")]
+transform = Transform3D(0.1736, 0, 0.9848, 0, 1, 0, -0.9848, 0, 0.1736, -6, 0, -2.2)
+
+[node name="ShopName" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.93, -3.27)
+pixel_size = 0.0095
+text = "ส้มตำป้าแดง"
+font = ExtResource("15_r")
+font_size = 70
+modulate = Color(0.78, 0.13, 0.1, 1)
+outline_size = 0
+
+[node name="ShopTag" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.45, -3.27)
+pixel_size = 0.0095
+text = "ส้มตำ • ไก่ย่าง • ข้าวเหนียว"
+font = ExtResource("15_r")
+font_size = 26
+modulate = Color(0.3, 0.15, 0.08, 1)
+outline_size = 0
+
+[node name="ShopSign0" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -12, 3.2, -5.96)
+pixel_size = 0.01
+text = "ซ่อมรถ"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign1" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -8, 3.2, -5.96)
+pixel_size = 0.01
+text = "ร้านโชห่วย"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign2" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4, 3.2, -5.96)
+pixel_size = 0.01
+text = "กาแฟโบราณ"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign3" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.2, -5.96)
+pixel_size = 0.01
+text = "ร้านยา"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign4" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4, 3.2, -5.96)
+pixel_size = 0.01
+text = "ข้าวมันไก่"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign5" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 8, 3.2, -5.96)
+pixel_size = 0.01
+text = "ซ่อมมือถือ"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="ShopSign6" type="Label3D" parent="Env"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 12, 3.2, -5.96)
+pixel_size = 0.01
+text = "ร้านทอง"
+font = ExtResource("15_r")
+font_size = 52
+outline_size = 8
+outline_modulate = Color(0, 0, 0, 0.6)
+
+[node name="Lights" type="Node3D" parent="."]
+
+[node name="Lamp0" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.5, 2.7, -1.2)
+light_color = Color(1, 0.78, 0.5, 1)
+light_energy = 0.8
+omni_range = 5.5
+
+[node name="Lamp1" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.5, 2.7, -1.2)
+light_color = Color(1, 0.78, 0.5, 1)
+light_energy = 0.8
+omni_range = 5.5
+
+[node name="Lamp2" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 2.7, 3.6)
+light_color = Color(1, 0.78, 0.5, 1)
+light_energy = 0.8
+omni_range = 5.5
+
+[node name="Stations" type="Node3D" parent="."]
+
+[node name="Crate_papaya" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "papaya"
+item_height = 0.94
+
+[node name="Crate_chili" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.8, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "chili"
+item_height = 0.94
+
+[node name="Crate_tomato" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.6, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "tomato"
+item_height = 0.94
+
+[node name="Crate_peanut" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.6, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "peanut"
+item_height = 0.94
+
+[node name="Crate_crab" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.8, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "crab"
+item_height = 0.94
+
+[node name="Crate_corn" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3, 0, -3)
+script = ExtResource("17_r")
+model = ExtResource("16_r")
+ingredient_id = "corn"
+item_height = 0.94
+
+[node name="Chop1" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.2, 0, -1.6)
+script = ExtResource("19_r")
+model = ExtResource("18_r")
+item_height = 0.98
+
+[node name="Chop2" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.2, 0, -0.4)
+script = ExtResource("19_r")
+model = ExtResource("18_r")
+item_height = 0.98
+
+[node name="CounterL" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.2, 0, 0.8)
+script = ExtResource("21_r")
+model = ExtResource("20_r")
+
+[node name="Mortar1" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.2, 0, -1.6)
+script = ExtResource("22_r")
+model = ExtResource("20_r")
+
+[node name="Mortar2" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.2, 0, -0.4)
+script = ExtResource("22_r")
+model = ExtResource("20_r")
+
+[node name="CounterR" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.2, 0, 0.8)
+script = ExtResource("21_r")
+model = ExtResource("20_r")
+
+[node name="Trash" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0, 2.2)
+script = ExtResource("24_r")
+model = ExtResource("23_r")
+size = Vector3(0.7, 0.85, 0.7)
+
+[node name="CounterF1" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -1.8, 0, 2.2)
+script = ExtResource("21_r")
+model = ExtResource("20_r")
+
+[node name="CounterF2" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.6, 0, 2.2)
+script = ExtResource("21_r")
+model = ExtResource("20_r")
+
+[node name="Serve" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.6, 0, 2.2)
+script = ExtResource("26_r")
+model = ExtResource("25_r")
+title = "เสิร์ฟ"
+
+[node name="CounterF3" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 1.8, 0, 2.2)
+script = ExtResource("21_r")
+model = ExtResource("20_r")
+
+[node name="Plates" type="StaticBody3D" parent="Stations"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3, 0, 2.2)
+script = ExtResource("28_r")
+model = ExtResource("27_r")
+
+[node name="Seats" type="Node3D" parent="."]
+
+[node name="Tables" type="Node3D" parent="."]
+
+[node name="Table0" parent="Tables" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.4, 0, 4.5)
+
+[node name="Seat0" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -4.02, 0, 4.5)
+
+[node name="Stool0" parent="Tables" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -4.02, 0, 4.5)
+
+[node name="Seat1" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, -2.78, 0, 4.5)
+
+[node name="Stool1" parent="Tables" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -2.78, 0, 4.5)
+
+[node name="Table1" parent="Tables" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, 4.5)
+
+[node name="Seat2" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, -0.62, 0, 4.5)
+
+[node name="Stool2" parent="Tables" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.62, 0, 4.5)
+
+[node name="Seat3" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 0.62, 0, 4.5)
+
+[node name="Stool3" parent="Tables" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.62, 0, 4.5)
+
+[node name="Table2" parent="Tables" instance=ExtResource("8_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.4, 0, 4.5)
+
+[node name="Seat4" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, -1, 0, 1, 0, 1, 0, 6.123e-17, 2.78, 0, 4.5)
+
+[node name="Stool4" parent="Tables" instance=ExtResource("10_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 2.78, 0, 4.5)
+
+[node name="Seat5" type="Marker3D" parent="Seats"]
+transform = Transform3D(6.123e-17, 0, 1, 0, 1, 0, -1, 0, 6.123e-17, 4.02, 0, 4.5)
+
+[node name="Stool5" parent="Tables" instance=ExtResource("9_r")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 4.02, 0, 4.5)

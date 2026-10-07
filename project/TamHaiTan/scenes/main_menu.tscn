@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://btamhaimenu01"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_mm"]
+[ext_resource type="PackedScene" path="res://scenes/stage.tscn" id="2_st"]
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_mm")
+
+[node name="Stage" parent="." instance=ExtResource("2_st")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.6428, 0.766, 0, -0.766, 0.6428, 0, 6, 9)
+current = true
+fov = 45.0
+
+[node name="Actors" type="Node3D" parent="."]

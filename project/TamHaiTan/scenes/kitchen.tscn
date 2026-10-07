@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://btamhaitank01"]
+
+[ext_resource type="Script" path="res://scripts/kitchen.gd" id="1_r"]
+[ext_resource type="PackedScene" path="res://scenes/stage.tscn" id="2_r"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="3_r"]
+[ext_resource type="Script" path="res://scripts/order_manager.gd" id="4_r"]
+[ext_resource type="Script" path="res://scripts/customer_manager.gd" id="5_r"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="6_r"]
+[ext_resource type="Script" path="res://scripts/ui/dialogue_box.gd" id="7_r"]
+
+[node name="Kitchen" type="Node3D"]
+script = ExtResource("1_r")
+
+[node name="Stage" parent="." instance=ExtResource("2_r")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.6428, 0.766, 0, -0.766, 0.6428, 0, 12.0, 10.0)
+current = true
+fov = 43.0
+
+[node name="Player" type="CharacterBody3D" parent="."]
+process_mode = 1
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.05, -0.6)
+script = ExtResource("3_r")
+
+[node name="OrderManager" type="Node" parent="."]
+process_mode = 1
+script = ExtResource("4_r")
+
+[node name="Customers" type="Node3D" parent="." node_paths=PackedStringArray("order_manager", "seats_root")]
+process_mode = 1
+script = ExtResource("5_r")
+order_manager = NodePath("../OrderManager")
+seats_root = NodePath("../Stage/Seats")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("6_r")
+
+[node name="DialogueBox" type="CanvasLayer" parent="."]
+script = ExtResource("7_r")

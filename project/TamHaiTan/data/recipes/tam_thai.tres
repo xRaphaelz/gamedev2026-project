@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="Recipe" format=3]
+
+[ext_resource type="Script" path="res://scripts/data/recipe.gd" id="1_i8kxe"]
+[ext_resource type="Texture2D" path="res://assets/icons/dish_tam_thai.png" id="icon_1"]
+
+[resource]
+script = ExtResource("1_i8kxe")
+id = "tam_thai"
+icon = ExtResource("icon_1")
+display_name = "ตำไทย"
+ingredients = {
+"chili": 1,
+"papaya": 1,
+"peanut": 1,
+"tomato": 1
+}
+dish_color = Color(0.72, 0.88, 0.45, 1)
