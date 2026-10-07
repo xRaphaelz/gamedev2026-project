@@ -41,6 +41,37 @@ func _setup_environment() -> void:
 	sun.shadow_normal_bias = 1.2
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
 	sun.directional_shadow_max_distance = 32.0
+	if is_low_quality():
+		_apply_low_quality(env, sun)
+
+
+## เว็บ (เบราว์เซอร์) รันเธรดเดียวและใช้ WebGL จึงลดงานกราฟิกที่หนักที่สุดลง
+## ทดสอบบนเครื่องได้ด้วย: godot --path . -- --lowq
+static func is_low_quality() -> bool:
+	return OS.has_feature("web") or "--lowq" in OS.get_cmdline_user_args()
+
+
+func _apply_low_quality(env: Environment, sun: DirectionalLight3D) -> void:
+	get_viewport().msaa_3d = Viewport.MSAA_DISABLED
+	RenderingServer.directional_shadow_atlas_set_size(2048, true)
+	RenderingServer.directional_soft_shadow_filter_set_quality(RenderingServer.SHADOW_QUALITY_SOFT_LOW)
+	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+	sun.directional_shadow_max_distance = 22.0
+	sun.shadow_blur = 1.0
+	env.glow_enabled = false
+	# ไฟโคม 3 ดวงตอนเย็น: ใน Compatibility ทุกดวงคือการวาดซ้ำทั้งฉาก -> เหลือดวงเดียวตรงกลาง
+	var lamps := $Lights.get_children()
+	for i in lamps.size():
+		var l := lamps[i] as OmniLight3D
+		if l == null or l.is_queued_for_deletion():
+			continue
+		l.shadow_enabled = false
+		if i > 0:
+			l.queue_free()
+		else:
+			l.position = Vector3(0, 2.7, 0.8)
+			l.omni_range = 8.0
+			l.light_energy = 1.2
 
 
 ## ซ่อนป้ายชื่อ/สถานะของสถานี (ใช้ในคัตซีนและเมนู)
