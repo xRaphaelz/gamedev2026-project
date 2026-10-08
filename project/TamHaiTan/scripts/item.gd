@@ -12,6 +12,8 @@ var prepared: bool = false
 var dish: Recipe = null
 ## true = ตำผิดสูตร
 var dish_failed: bool = false
+## จำนวนพริกในจาน (= ระดับเผ็ด)
+var spice: int = 0
 
 var _visual: Node3D
 
@@ -53,15 +55,17 @@ func set_prepared() -> void:
 	_rebuild_visual()
 
 
-func set_dish(recipe: Recipe, failed: bool) -> void:
+func set_dish(recipe: Recipe, failed: bool, chili := 0) -> void:
 	dish = recipe
 	dish_failed = failed
+	spice = chili
 	_rebuild_visual()
 
 
 func clear_dish() -> void:
 	dish = null
 	dish_failed = false
+	spice = 0
 	_rebuild_visual()
 
 
@@ -70,7 +74,7 @@ func describe() -> String:
 		if dish_failed:
 			return "ส้มตำมั่ว"
 		if dish:
-			return dish.display_name
+			return "%s (%s)" % [dish.display_name, Item.spice_text(spice)]
 		return "จานเปล่า"
 	var n := Ingredients.display_name(ingredient_id)
 	if Ingredients.needs_prep(ingredient_id):
@@ -87,6 +91,10 @@ func model_path() -> String:
 			return "res://assets/models/dishes/dish_%s.glb" % dish.id
 		return "res://assets/models/dishes/plate.glb"
 	return ingredient_model_path(ingredient_id, prepared)
+
+
+static func spice_text(n: int) -> String:
+	return "ไม่เผ็ด" if n <= 0 else "พริก %d เม็ด" % n
 
 
 static func ingredient_model_path(id: String, is_prepared: bool) -> String:

@@ -10,6 +10,9 @@ extends Node3D
 @export var bounds := Rect2(-4.9, -3.75, 9.8, 6.6)
 
 var _last_tick := -1
+var _rush_music := false
+## เวลาที่เหลือ (วินาที) ที่เพลงเปลี่ยนเป็นช่วงเร่ง
+const RUSH_AT := 30.0
 
 
 func _ready() -> void:
@@ -24,6 +27,9 @@ func _ready() -> void:
 	hud.resume_pressed.connect(func(): _set_paused(false))
 	om.level_finished.connect(_on_finished)
 	om.order_added.connect(func(_o): Audio.sfx("order", -4.0))
+	om.combo_changed.connect(_on_combo)
+	om.event_started.connect(_on_event_started)
+	om.event_ended.connect(_on_event_ended)
 	om.time_left = GameState.current_level().duration
 	dialogue.finished.connect(_show_intro)
 	var story := GameState.current_level().story_before
@@ -45,6 +51,10 @@ func _show_intro() -> void:
 
 
 func _process(_delta: float) -> void:
+	# 30 วิสุดท้าย: เพลงเร่ง
+	if GameState.is_playing() and not _rush_music and om.time_left <= RUSH_AT and om.running:
+		_rush_music = true
+		Audio.music("rush", 0.5)
 	# นับถอยหลัง 10 วินาทีสุดท้าย
 	if GameState.is_playing():
 		var t := int(ceil(om.time_left))
@@ -78,7 +88,36 @@ func _start() -> void:
 	hud.hide_intro()
 	GameState.phase = GameState.Phase.PLAYING
 	om.start(GameState.current_level())
-	Audio.music("game")
+	_rush_music = false
+	Audio.music(GameState.current_level().music)
+
+
+func _on_combo(count: int, mult: float) -> void:
+	# คอมโบขึ้นขั้น: เสียงสูงขึ้นตามขั้น / x3 เปิดชั้นเพลงเสริม
+	if count >= 2 and count in [2, 4, 6]:
+		Audio.sfx("star", -2.0, 0.0, 1.0 + 0.12 * [2, 4, 6].find(count) + 0.1)
+	Audio.layer(mult >= 3.0 and not _rush_music)
+
+
+func _on_event_started(id: String, _duration: float) -> void:
+	match id:
+		"rain":
+			stage.set_rain(true)
+		"papaya_out":
+			var c := stage.get_node_or_null("Stations/Crate_papaya") as CrateStation
+			if c:
+				c.set_out_of_stock(true)
+
+
+func _on_event_ended(id: String) -> void:
+	match id:
+		"rain":
+			stage.set_rain(false)
+		"papaya_out":
+			var c := stage.get_node_or_null("Stations/Crate_papaya") as CrateStation
+			if c and c.out_of_stock:
+				c.set_out_of_stock(false)
+				GameState.toast("ร้านส่งมะละกอมาเติมแล้ว", true)
 
 
 func _set_paused(on: bool) -> void:

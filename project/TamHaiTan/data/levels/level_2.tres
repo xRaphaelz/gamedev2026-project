@@ -12,7 +12,11 @@ cutscene_before = "level_2"
 level_name = "บท 2: วัตถุดิบขาด"
 chapter = 2
 intro_text = "ป้าแดง: ร้านส่งมะละกอสับมาไม่ทัน ต้องหั่นเองที่เขียงนะ
-วันนี้เพิ่มตำปูด้วย ใส่ปูดองแทนถั่ว"
+วันนี้เพิ่มตำปูด้วย ใส่ปูดองแทนถั่ว
+ลูกค้าเริ่มสั่งความเผ็ดแล้ว ใส่พริกให้ตรงจำนวนบนการ์ดออเดอร์"
 order_interval = 26.0
 recipes = Array[ExtResource("1_8wi7h")]([ExtResource("2_tewwg"), ExtResource("3_5bqiv")])
-target_score = 260
+target_score = 360
+spice_enabled = true
+event_count = 1
+music = "level2"

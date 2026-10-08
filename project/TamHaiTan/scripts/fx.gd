@@ -87,8 +87,23 @@ static func pop(n: Node3D, amount := 1.25) -> void:
 static func shake(n: Node3D, strength := 0.03) -> void:
 	if n == null or not n.is_inside_tree():
 		return
-	var base := n.position
+	# จำตำแหน่งเดิมไว้ ไม่ให้สั่นซ้อนกันแล้วของเลื่อนหลุดที่
+	if not n.has_meta("shake_base"):
+		n.set_meta("shake_base", n.position)
+	var base: Vector3 = n.get_meta("shake_base")
 	var tw := n.create_tween()
 	for i in 3:
 		tw.tween_property(n, "position", base + Vector3(randf_range(-1, 1), 0, randf_range(-1, 1)) * strength, 0.03)
 	tw.tween_property(n, "position", base, 0.04)
+
+
+## สั่นกล้องเบา ๆ (ใช้ h/v offset จึงไม่ชนกับการเคลื่อนกล้องอื่น)
+static func cam_shake(cam: Camera3D, strength := 0.02) -> void:
+	if cam == null or not cam.is_inside_tree():
+		return
+	var tw := cam.create_tween()
+	for i in 3:
+		tw.tween_property(cam, "h_offset", randf_range(-1, 1) * strength, 0.025)
+		tw.parallel().tween_property(cam, "v_offset", randf_range(-1, 1) * strength, 0.025)
+	tw.tween_property(cam, "h_offset", 0.0, 0.04)
+	tw.parallel().tween_property(cam, "v_offset", 0.0, 0.04)

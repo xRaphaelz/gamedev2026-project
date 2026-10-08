@@ -191,6 +191,17 @@ func face_to(name: String, target: Variant) -> void:
 	a.rotation.y = atan2(-d.x, -d.z)
 
 
+## ให้ตัวละครยืนหน้าครก (สถานี Mortar1/Mortar2) แล้วตำวนไป ถือสากในมือ
+func pound_at(name: String, station: String) -> void:
+	var m := stage.get_node("Stations/" + station) as MortarStation
+	var a: CharacterRig = actors[name]
+	var spot := m.pound_spot(Vector3(1, 0, 0))
+	a.position = spot.position
+	a.rotation.y = spot.yaw
+	a.react("pound")
+	m.set_pestle_in_hand(true, 9999.0)
+
+
 func mood(name: String, m: String) -> void:
 	actors[name].react(m)
 
@@ -370,21 +381,22 @@ func _cs_level_1() -> void:
 	stage.apply_time_of_day(0)
 	Audio.music("calm")
 	spawn("daeng", "daeng", Vector3(3.4, 0, -0.4), -90)
+	pound_at("daeng", "Mortar2")
 	spawn("p1", "office", Vector3(-13, 0, 6.6), -90)
 	spawn("p2", "tourist", Vector3(13, 0, 7.3), 90)
 	spawn("p3", "rider", Vector3(-15, 0, 7.6), -90)
 	walk("p1", [Vector3(13, 0, 6.6)], 1.6)
 	walk("p2", [Vector3(-13, 0, 7.3)], 1.3)
 	walk("p3", [Vector3(13, 0, 7.6)], 1.9)
-	mood("daeng", "pound")
 	shot(Vector3(-10, 5.5, 13), Vector3(0, 1.5, -1.5), 45)
 	move_cam(Vector3(-3.5, 4.0, 9.0), Vector3(1, 1.6, -1.5), 7.0)
 	await narrate("ตลาดเช้าหน้าปากซอย มีร้านส้มตำเล็ก ๆ ร้านหนึ่ง ชื่อ \"ส้มตำป้าแดง\"", 3.6)
 	await narrate("ป้าแดงตำส้มตำขายมากว่ายี่สิบปี ไม่เคยปิดร้านสักวัน", 3.4)
-	shot(Vector3(5.7, 1.85, -1.5), Vector3(3.4, 1.2, -0.4), 40)
-	move_cam(Vector3(5.4, 1.75, -1.25), Vector3(3.4, 1.2, -0.4), 4.0)
+	shot(Vector3(5.6, 1.15, 0.2), Vector3(3.8, 0.75, -0.6), 40)
+	move_cam(Vector3(5.3, 1.05, 0.05), Vector3(3.8, 0.75, -0.6), 4.0)
 	await say("ป้าแดง", "ตำไทยจานนี้ เผ็ดกำลังดีเลย~", 2.6)
 	mood("daeng", "dizzy")
+	(stage.get_node("Stations/Mortar2") as MortarStation).set_pestle_in_hand(false)
 	await say("ป้าแดง", "เอ๊ะ... ทำไมโลกมันหมุน ๆ ล่ะ...", 2.8)
 	prop("res://assets/models/props/plastic_stool.glb", Vector3(2.6, 0, 0.5))
 	mood("daeng", "")
@@ -434,7 +446,7 @@ func _cs_level_2() -> void:
 	# ตัดไปที่เขียง
 	actors["tom"].position = Vector3(-3.4, 0, -1.6)
 	face("tom", 90)
-	mood("tom", "pound")
+	mood("tom", "chop")
 	shot(Vector3(-2.2, 1.8, 0.3), Vector3(-4.0, 1.1, -1.5), 40)
 	var whole := prop("res://assets/models/ingredients/papaya_shred.glb", Vector3(-4.2, 0.98, -1.6), 0, 1.2)
 	whole.visible = true
@@ -572,12 +584,8 @@ func _cs_ending_mid() -> void:
 	mood("daeng", "laugh")
 	await say("ป้าแดง", "ไม่เป็นไร พรุ่งนี้มาตำด้วยกันนะ ป้าจะสอนเคล็ดลับให้", 3.0)
 	# ตำคู่กัน
-	actors["tom"].position = Vector3(3.4, 0, -1.6)
-	face("tom", -90)
-	actors["daeng"].position = Vector3(3.4, 0, -0.4)
-	face("daeng", -90)
-	mood("tom", "pound")
-	mood("daeng", "pound")
+	pound_at("tom", "Mortar1")
+	pound_at("daeng", "Mortar2")
 	shot(Vector3(1.0, 2.2, 1.2), Vector3(4.0, 1.1, -1.0), 42)
 	move_cam(Vector3(1.6, 2.0, 0.6), Vector3(4.0, 1.1, -1.0), 3.0)
 	await _wait(3.2)

@@ -2,6 +2,8 @@ class_name Recipe
 extends Resource
 ## สูตรอาหาร 1 เมนู — เพิ่มเมนูใหม่ได้โดยสร้างไฟล์ .tres ใหม่ ไม่ต้องแก้โค้ด
 
+const SPICE_ID := "chili"
+
 @export var id: String = ""
 @export var display_name: String = ""
 @export var icon: Texture2D
@@ -15,18 +17,30 @@ extends Resource
 @export var dish_color: Color = Color.WHITE
 
 
+## เทียบส่วนผสม (ไม่นับพริก — จำนวนพริกคือระดับความเผ็ด ตรวจตอนเสิร์ฟ)
 func matches(contents: Dictionary) -> bool:
-	if contents.size() != ingredients.size():
-		return false
+	for key in contents:
+		if str(key) != SPICE_ID and not ingredients.has(str(key)):
+			return false
 	for key in ingredients:
+		if str(key) == SPICE_ID:
+			continue
 		if int(contents.get(str(key), 0)) != int(ingredients[key]):
 			return false
 	return true
 
 
-func ingredient_text() -> String:
+## จำนวนพริกตามสูตรปกติ (ใช้เป็นระดับเผ็ดเมื่อด่านไม่เปิดระบบความเผ็ด)
+func base_spice() -> int:
+	return int(ingredients.get(SPICE_ID, 0))
+
+
+## รายการวัตถุดิบ (ไม่รวมพริก ซึ่งแสดงแยกเป็นระดับเผ็ด)
+func ingredient_text(with_spice := false) -> String:
 	var parts: PackedStringArray = []
 	for key in ingredients:
+		if str(key) == SPICE_ID and not with_spice:
+			continue
 		var n := int(ingredients[key])
 		var name := Ingredients.display_name(str(key))
 		parts.append(name if n == 1 else "%s x%d" % [name, n])

@@ -17,12 +17,12 @@ func interact(player: Player) -> void:
 	if om == null:
 		return
 	var before := om.score
-	var was_failed := h.dish_failed
-	if om.serve(h.dish if not h.dish_failed else null):
+	var wrong_before: int = om.stats.get("wrong", 0)
+	if om.serve(h.dish if not h.dish_failed else null, h.spice):
 		player.release().queue_free()
 		var delta := om.score - before
 		var top := global_position + Vector3(0, 1.4, 0)
-		if was_failed:
+		if int(om.stats.get("wrong", 0)) > wrong_before:
 			Fx.float_text(self, top, "-%d" % OrderManager.WRONG_PENALTY, Color(1, 0.45, 0.35))
 		else:
 			Fx.float_text(self, top, "+%d" % delta)

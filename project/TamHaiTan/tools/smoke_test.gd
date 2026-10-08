@@ -39,6 +39,7 @@ func _run() -> void:
 		for r in om.config.recipes:
 			if r.id == "tam_thai": recipe = r
 		o.recipe = recipe
+		o.spice = 1
 		var mortar := st(k, "Mortar1")
 		for ing in ["papaya", "chili", "tomato", "peanut"]:
 			st(k, "Crate_" + ing).interact(p)
@@ -90,6 +91,7 @@ func _run() -> void:
 		k.queue_free()
 		await get_tree().process_frame
 	await customer_test()
+	await systems_test()
 	await cutscene_test()
 	await menu_test()
 	check(om_stars_ok(), "stars formula")
@@ -121,6 +123,104 @@ func customer_test() -> void:
 			break
 		c._process(0.05)
 	check(not is_instance_valid(c) or c.is_queued_for_deletion(), "customer exits and is freed")
+	k.queue_free()
+	await get_tree().process_frame
+
+
+## ความเผ็ด คอมโบ ทิป เหตุการณ์สุ่ม ท่าตำ
+func systems_test() -> void:
+	var gs = get_tree().root.get_node("GameState")
+	gs.level_index = 1
+	var k: Node = load("res://scenes/kitchen.tscn").instantiate()
+	get_tree().root.add_child(k)
+	await get_tree().process_frame
+	k.get_node("DialogueBox").skip()
+	k._start()
+	var om: OrderManager = k.get_node("OrderManager")
+	var p: Player = k.get_node("Player")
+	var thai: Recipe = null
+	for r in om.config.recipes:
+		if r.id == "tam_thai": thai = r
+	om._event_plan.clear()
+	# --- ความเผ็ด: ต้องตรงจำนวนพริก ---
+	om.orders.clear()
+	var o = om.add_random_order({}, thai)
+	o.spice = 2
+	var before := om.score
+	om.serve(thai, 0)
+	check(om.orders.size() == 1 and om.stats.wrong == 1 and om.combo == 0, "spice off by 2 -> wrong dish, order stays")
+	before = om.score
+	o.time_left = o.patience * 0.1  # ช้า: ไม่มีทิป
+	om.serve(thai, 1)
+	check(om.orders.is_empty() and om.score - before == int(round(thai.score * 0.75)), "spice off by 1 -> 75%% score (+%d)" % (om.score - before))
+	# --- คอมโบ + ทิป ---
+	om.combo = 0
+	var gains := []
+	for i in 6:
+		var oo = om.add_random_order({}, thai)
+		oo.spice = 1
+		oo.time_left = oo.patience  # เสิร์ฟทันที: ทิปเต็ม
+		var b := om.score
+		om.serve(thai, 1)
+		gains.append(om.score - b)
+	var s := thai.score
+	check(gains[0] == s + OrderManager.TIP_FAST, "first dish x1 + fast tip (%d)" % gains[0])
+	check(gains[1] == int(round(s * 1.5)) + OrderManager.TIP_FAST, "combo 2 -> x1.5 (%d)" % gains[1])
+	check(gains[3] == s * 2 + OrderManager.TIP_FAST and gains[5] == s * 3 + OrderManager.TIP_FAST, "combo 4 -> x2, combo 6 -> x3")
+	check(om.stats.max_combo == 6 and om.stats.tips == OrderManager.TIP_FAST * 6, "stats max combo / tips")
+	var ex = om.add_random_order({}, thai)
+	ex.time_left = 0.01
+	om._process(0.05)
+	check(om.combo == 0, "expired order breaks combo")
+	# --- ทิปตามความเร็ว + หน้าลูกค้า ---
+	var t1 = om.add_random_order({}, thai)
+	t1.time_left = t1.patience * 0.5
+	check(om.tip_for(t1) == OrderManager.TIP_OK and t1.mood() == 1, "half-waited -> small tip, neutral face")
+	t1.time_left = t1.patience * 0.2
+	check(om.tip_for(t1) == 0 and t1.mood() == 0, "long wait -> no tip, angry face")
+	om.orders.clear()
+	# --- เหตุการณ์สุ่ม ---
+	om.start_event("rain")
+	await get_tree().process_frame
+	var tr = om.add_random_order({}, thai)
+	tr.time_left = tr.patience
+	check(om.tip_for(tr) == OrderManager.TIP_FAST * 2 and om._interval_scale() > 1.0, "rain: tip x2, slower customers")
+	om.end_event("rain")
+	om.orders.clear()
+	om.start_event("tour")
+	check(om.orders.size() == 3 and om.orders[0].recipe == om.orders[2].recipe, "tour: 3 orders same menu")
+	om.orders.clear()
+	om.start_event("rush")
+	var rr = om.add_random_order({}, thai)
+	check(om._interval_scale() < 1.0 and rr.patience < 65.0 * 0.85 + 30.0, "rush: faster spawns, shorter patience")
+	om.end_event("rush")
+	om.orders.clear()
+	om.start_event("reviewer")
+	check(om.orders.size() == 1 and om.orders[0].reviewer, "reviewer order created")
+	var rv = om.orders[0]
+	rv.time_left = rv.patience
+	var b2 := om.score
+	om.combo = 0
+	om.serve(rv.recipe, rv.spice)
+	check(om.score - b2 == (rv.recipe.score + OrderManager.TIP_FAST) * 2, "reviewer pays x2 (+%d)" % (om.score - b2))
+	om.start_event("papaya_out")
+	await get_tree().process_frame
+	var crate := st(k, "Crate_papaya") as CrateStation
+	check(crate.out_of_stock, "papaya crate out of stock")
+	crate.interact(p)
+	check(p.held == null, "can't take from empty crate")
+	for i in CrateStation.RESTOCK_HITS: crate.work(p)
+	check(not crate.out_of_stock, "mash space -> restocked")
+	crate.interact(p)
+	check(p.held != null and p.held.ingredient_id == "papaya", "take papaya after restock")
+	p.release().queue_free()
+	om.end_event("papaya_out")
+	# --- ท่าตำ: ยืนตรงจุด ให้หัวสากลงกลางครก ---
+	var m := st(k, "Mortar1") as MortarStation
+	var spot := m.pound_spot(Vector3(1, 0, 0))
+	var basis := Basis(Vector3.UP, spot.yaw)
+	var hit: Vector3 = spot.position + basis * Vector3(CharacterRig.POUND_REACH.x, 0, -CharacterRig.POUND_REACH.z)
+	check(Vector2(hit.x - m.global_position.x, hit.z - m.global_position.z).length() < 0.02, "pound spot puts pestle in mortar")
 	k.queue_free()
 	await get_tree().process_frame
 
@@ -161,6 +261,6 @@ func menu_test() -> void:
 func om_stars_ok() -> bool:
 	var om := OrderManager.new()
 	om.config = load("res://data/levels/level_1.tres")
-	var ok: bool = om.stars_for(0) == 1 and om.stars_for(220) == 5 and om.stars_for(132) == 3
+	var ok: bool = om.stars_for(0) == 1 and om.stars_for(300) == 5 and om.stars_for(180) == 3
 	om.free()
 	return ok

@@ -116,6 +116,48 @@ func apply_time_of_day(t: int) -> void:
 	set_emission($Env/Bulbs, p.bulb)
 
 
+var _rain: CPUParticles3D
+var _rain_tween: Tween
+var _sun_energy := -1.0
+var _amb_energy := -1.0
+
+
+## ฝนตก (เหตุการณ์สุ่ม): เม็ดฝน + ฟ้ามืดลง
+func set_rain(on: bool) -> void:
+	var sun: DirectionalLight3D = $Sun
+	var env: Environment = $WorldEnvironment.environment
+	if _sun_energy < 0.0:
+		_sun_energy = sun.light_energy
+		_amb_energy = env.ambient_light_energy
+	if _rain == null:
+		_rain = CPUParticles3D.new()
+		_rain.amount = 160 if is_low_quality() else 420
+		_rain.lifetime = 0.9
+		_rain.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+		_rain.emission_box_extents = Vector3(12, 0.2, 9)
+		_rain.position = Vector3(0, 7, 2)
+		_rain.direction = Vector3(0.15, -1, 0)
+		_rain.spread = 2.0
+		_rain.gravity = Vector3(0, -20, 0)
+		_rain.initial_velocity_min = 9.0
+		_rain.initial_velocity_max = 11.0
+		var drop := BoxMesh.new()
+		drop.size = Vector3(0.015, 0.35, 0.015)
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(0.75, 0.85, 1.0, 0.55)
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		drop.material = m
+		_rain.mesh = drop
+		add_child(_rain)
+	_rain.emitting = on
+	if _rain_tween:
+		_rain_tween.kill()
+	_rain_tween = create_tween().set_parallel()
+	_rain_tween.tween_property(sun, "light_energy", _sun_energy * (0.45 if on else 1.0), 1.2)
+	_rain_tween.tween_property(env, "ambient_light_energy", _amb_energy * (0.75 if on else 1.0), 1.2)
+
+
 static func set_emission(n: Node, energy: float) -> void:
 	if n is MeshInstance3D:
 		var mesh: Mesh = n.mesh

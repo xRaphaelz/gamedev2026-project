@@ -29,6 +29,13 @@ var _result_body: Label
 var _result_stars: StarRow
 var _next_btn: Button
 var _result_review: Label
+var _combo_label: Label
+var _combo_tween: Tween
+var _event_banner: PanelContainer
+var _event_title: Label
+var _event_desc: Label
+var _event_chip: Label
+var _event_tween: Tween
 
 
 func _ready() -> void:
@@ -41,6 +48,10 @@ func bind(order_manager: OrderManager) -> void:
 	om = order_manager
 	om.orders_changed.connect(_rebuild_orders)
 	om.score_changed.connect(func(s): _score_label.text = "คะแนน %d" % s)
+	om.combo_changed.connect(_on_combo)
+	om.event_warning.connect(_on_event_warning)
+	om.event_started.connect(_on_event_started)
+	om.event_ended.connect(func(_id): _refresh_event_chip())
 	_rebuild_orders()
 
 
@@ -50,6 +61,8 @@ func _process(_delta: float) -> void:
 	var t := int(ceil(om.time_left))
 	_time_label.text = "%d:%02d" % [t / 60, t % 60]
 	_time_label.modulate = Color(1, 0.4, 0.4) if t <= 30 and om.running else Color.WHITE
+	if om.running and not om.active_events.is_empty():
+		_refresh_event_chip()
 	# อัปเดตแถบเวลาของแต่ละออเดอร์
 	for i in min(_orders_box.get_child_count(), om.orders.size()):
 		var card := _orders_box.get_child(i)
@@ -92,6 +105,42 @@ func _build() -> void:
 	_score_label = _label("คะแนน 0", 22, CREAM)
 	_score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	rv.add_child(_score_label)
+
+	# คอมโบ: ใต้แผงเวลา
+	_combo_label = _label("", 34, Color(1, 0.75, 0.2))
+	_combo_label.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_combo_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_set_offsets(_combo_label, -170, 128, -6, 176)
+	_combo_label.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_combo_label.pivot_offset = Vector2(82, 24)
+	_combo_label.add_theme_constant_override("outline_size", 10)
+	_combo_label.add_theme_color_override("font_outline_color", Color(0.45, 0.12, 0.02))
+	root.add_child(_combo_label)
+
+	# ป้ายเตือนเหตุการณ์สุ่ม (กลางจอด้านบน) + ป้ายเล็กตอนเหตุการณ์กำลังเกิด
+	_event_banner = _panel(Color(0.18, 0.1, 0.06, 0.92), ORANGE)
+	_event_banner.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_set_offsets(_event_banner, -300, 60, 300, 150)
+	_event_banner.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	var ev := VBoxContainer.new()
+	ev.alignment = BoxContainer.ALIGNMENT_CENTER
+	_event_banner.add_child(ev)
+	_event_title = _label("", 34, Color(1, 0.8, 0.3))
+	_event_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ev.add_child(_event_title)
+	_event_desc = _label("", 20, CREAM)
+	_event_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ev.add_child(_event_desc)
+	_event_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_event_banner.hide()
+	root.add_child(_event_banner)
+	_event_chip = _label("", 22, Color(1, 0.85, 0.4))
+	_event_chip.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_event_chip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_set_offsets(_event_chip, -300, 14, 300, 48)
+	_event_chip.add_theme_constant_override("outline_size", 8)
+	_event_chip.add_theme_color_override("font_outline_color", Color.BLACK)
+	root.add_child(_event_chip)
 
 	_toast_label = _label("", 26, Color.WHITE)
 	_toast_label.set_anchors_preset(Control.PRESET_CENTER_TOP)
@@ -215,7 +264,7 @@ func _rebuild_orders() -> void:
 
 
 func _order_card(o: OrderManager.Order) -> Control:
-	var p := _panel(CREAM, o.recipe.dish_color.darkened(0.2))
+	var p := _panel(CREAM, Color(0.95, 0.72, 0.1) if o.reviewer else o.recipe.dish_color.darkened(0.2))
 	p.custom_minimum_size = Vector2(200, 0)
 	var h := HBoxContainer.new()
 	h.name = "H"
@@ -233,11 +282,16 @@ func _order_card(o: OrderManager.Order) -> Control:
 	v.name = "V"
 	h.add_child(v)
 	v.add_child(_label(o.recipe.display_name, 20, DARK))
-	var ing := _label(o.recipe.ingredient_text(), 12, Color(0.35, 0.25, 0.2))
+	var spice_on := om.config != null and om.config.spice_enabled
+	var ing := _label(o.recipe.ingredient_text(not spice_on), 12, Color(0.35, 0.25, 0.2))
 	ing.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	ing.custom_minimum_size.x = 125
 	v.add_child(ing)
-	v.add_child(_label(o.customer, 13, ORANGE.darkened(0.2)))
+	if spice_on:
+		var sp := _label(Item.spice_text(o.spice), 15, Color(0.8, 0.15, 0.1) if o.spice > 0 else Color(0.25, 0.55, 0.2))
+		v.add_child(sp)
+	var who := _label(("★ นักรีวิว (x2)" if o.reviewer else o.customer), 13, Color(0.75, 0.5, 0.0) if o.reviewer else ORANGE.darkened(0.2))
+	v.add_child(who)
 	var bar := ProgressBar.new()
 	bar.name = "Bar"
 	bar.show_percentage = false
@@ -279,7 +333,16 @@ const REVIEWS := [
 
 func show_result(score: int, stars: int, stats: Dictionary, has_next: bool, is_last: bool) -> void:
 	_result_stars.stars = 0
-	_result_body.text = "คะแนน %d\nเสิร์ฟสำเร็จ %d จาน  •  ลูกค้ากลับ %d คน  •  ตำมั่ว %d จาน" % [score, stats.served, stats.expired, stats.wrong]
+	var lines := PackedStringArray()
+	lines.append("คะแนนรวม %d" % score)
+	lines.append("ค่าอาหาร %d  •  ทิป %d  •  โบนัสคอมโบ %d" % [stats.get("food", 0), stats.get("tips", 0), stats.get("combo_bonus", 0)])
+	lines.append("เสิร์ฟสำเร็จ %d จาน  •  คอมโบสูงสุด %d  •  ลูกค้ากลับ %d คน  •  ตำมั่ว %d จาน" % [stats.served, stats.get("max_combo", 0), stats.expired, stats.wrong])
+	if stats.get("spice_off", 0) > 0:
+		lines.append("เผ็ดไม่ตรง %d จาน" % stats.spice_off)
+	if not stats.get("events", []).is_empty():
+		lines.append("เหตุการณ์วันนี้: " + ", ".join(PackedStringArray(stats.events)))
+	_result_body.text = "\n".join(lines)
+	_result_body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_result_review.text = REVIEWS[clampi(stars, 0, 5)]
 	_next_btn.visible = true
 	_next_btn.text = "ด่านถัดไป (Enter)" if has_next else "ดูตอนจบ (Enter)"
@@ -289,6 +352,44 @@ func show_result(score: int, stars: int, stats: Dictionary, has_next: bool, is_l
 		await get_tree().create_timer(0.35, true).timeout
 		_result_stars.stars = i + 1
 		Audio.sfx("star", -3.0)
+
+
+func _on_combo(count: int, mult: float) -> void:
+	if count < 2:
+		_combo_label.text = ""
+		return
+	_combo_label.text = "คอมโบ %d  x%s" % [count, ("%.1f" % mult).trim_suffix(".0")]
+	_combo_label.add_theme_color_override("font_color", Color(1, 0.35, 0.15) if mult >= 3.0 else (Color(1, 0.6, 0.15) if mult >= 2.0 else Color(1, 0.82, 0.3)))
+	if _combo_tween:
+		_combo_tween.kill()
+	_combo_label.scale = Vector2.ONE * 1.5
+	_combo_tween = create_tween()
+	_combo_tween.tween_property(_combo_label, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+func _on_event_warning(_id: String, title: String, desc: String) -> void:
+	_event_title.text = "เหตุการณ์: " + title
+	_event_desc.text = desc
+	_event_banner.show()
+	_event_banner.modulate.a = 0.0
+	if _event_tween:
+		_event_tween.kill()
+	_event_tween = create_tween()
+	_event_tween.tween_property(_event_banner, "modulate:a", 1.0, 0.25)
+	_event_tween.tween_interval(3.6)
+	_event_tween.tween_property(_event_banner, "modulate:a", 0.0, 0.4)
+	_event_tween.tween_callback(_event_banner.hide)
+
+
+func _on_event_started(_id: String, _duration: float) -> void:
+	_refresh_event_chip()
+
+
+func _refresh_event_chip() -> void:
+	var parts := PackedStringArray()
+	for id in om.active_events:
+		parts.append("%s %d วิ" % [OrderManager.EVENTS[id].title, int(ceil(om.active_events[id]))])
+	_event_chip.text = "  •  ".join(parts)
 
 
 func _on_toast(text: String, good: Variant) -> void:

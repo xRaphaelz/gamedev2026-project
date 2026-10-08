@@ -14,5 +14,8 @@ story_before = ExtResource("4_open")
 intro_text = "ป้าแดง: ต้อม ป้าฝากร้านด้วยนะ วันนี้ขายตำไทยอย่างเดียวพอ
 มะละกอป้าสับไว้ให้แล้ว หยิบของใส่ครก ตำ ตักใส่จาน แล้วเสิร์ฟ!"
 recipes = Array[ExtResource("1_3fnvu")]([ExtResource("2_3u61q")])
-target_score = 220
+target_score = 300
 require_chopping = false
+spice_enabled = false
+event_count = 0
+music = "level1"

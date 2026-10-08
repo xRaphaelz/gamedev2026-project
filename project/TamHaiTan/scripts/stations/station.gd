@@ -198,10 +198,10 @@ func _try_combine(player: Player) -> void:
 	var a := player.held
 	var b := held
 	if a.is_empty_plate() and b.has_dish():
-		a.set_dish(b.dish, b.dish_failed)
+		a.set_dish(b.dish, b.dish_failed, b.spice)
 		b.clear_dish()
 	elif b.is_empty_plate() and a.has_dish():
-		b.set_dish(a.dish, a.dish_failed)
+		b.set_dish(a.dish, a.dish_failed, a.spice)
 		a.clear_dish()
 	else:
 		GameState.toast("มีของวางอยู่แล้ว")

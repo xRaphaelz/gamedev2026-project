@@ -16,4 +16,7 @@ intro_text = "ป้าแดง: เจ๊หงส์มาเปิดร้�
 เพิ่มตำข้าวโพด ไม่ต้องใช้มะละกอ"
 order_interval = 22.0
 recipes = Array[ExtResource("1_k2ehc")]([ExtResource("2_aq2lk"), ExtResource("3_l1sh6"), ExtResource("4_l1vog")])
-target_score = 300
+target_score = 420
+spice_enabled = true
+event_count = 2
+music = "level3"

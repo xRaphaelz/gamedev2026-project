@@ -11,6 +11,10 @@ var _next := 0
 var _music_a: AudioStreamPlayer
 var _music_b: AudioStreamPlayer
 var _current_music := ""
+## ชั้นเพลงเสริม (<เพลง>_hype.ogg) เล่นซ้อนพร้อมกันตลอด เปิดเสียงขึ้นตอนคอมโบสูง
+var _layer: AudioStreamPlayer
+var _layer_on := false
+var _layer_tween: Tween
 var _cache := {}
 
 
@@ -28,7 +32,8 @@ func _ready() -> void:
 		_players.append(p)
 	_music_a = AudioStreamPlayer.new()
 	_music_b = AudioStreamPlayer.new()
-	for m in [_music_a, _music_b]:
+	_layer = AudioStreamPlayer.new()
+	for m in [_music_a, _music_b, _layer]:
 		m.bus = "Music"
 		add_child(m)
 	set_volume("Music", GameState.music_volume)
@@ -44,7 +49,7 @@ func _load(path: String) -> AudioStream:
 
 
 ## เล่นเสียงสั้น pitch_jitter สุ่มระดับเสียงเล็กน้อยไม่ให้ซ้ำซาก
-func sfx(name: String, volume_db := 0.0, pitch_jitter := 0.06) -> void:
+func sfx(name: String, volume_db := 0.0, pitch_jitter := 0.06, pitch := 1.0) -> void:
 	var s := _load(SFX_DIR % name)
 	if s == null:
 		return
@@ -52,7 +57,7 @@ func sfx(name: String, volume_db := 0.0, pitch_jitter := 0.06) -> void:
 	_next = (_next + 1) % _players.size()
 	p.stream = s
 	p.volume_db = volume_db
-	p.pitch_scale = 1.0 + randf_range(-pitch_jitter, pitch_jitter)
+	p.pitch_scale = pitch + randf_range(-pitch_jitter, pitch_jitter)
 	p.play()
 
 
@@ -67,6 +72,13 @@ func music(name: String, fade := 0.8) -> void:
 		var tw := create_tween()
 		tw.tween_property(old, "volume_db", -40.0, fade)
 		tw.tween_callback(old.stop)
+	_layer_on = false
+	if _layer_tween:
+		_layer_tween.kill()
+	if _layer.playing:
+		_layer_tween = create_tween()
+		_layer_tween.tween_property(_layer, "volume_db", -60.0, fade)
+		_layer_tween.tween_callback(_layer.stop)
 	if name == "":
 		return
 	var s := _load(MUSIC_DIR % name)
@@ -78,6 +90,27 @@ func music(name: String, fade := 0.8) -> void:
 	new.volume_db = -40.0
 	new.play()
 	create_tween().tween_property(new, "volume_db", -6.0, fade)
+	var hype := _load(MUSIC_DIR % (name + "_hype"))
+	if hype:
+		if hype is AudioStreamOggVorbis:
+			(hype as AudioStreamOggVorbis).loop = true
+		if _layer_tween:
+			_layer_tween.kill()
+		_layer.stop()
+		_layer.stream = hype
+		_layer.volume_db = -60.0
+		_layer.play()
+
+
+## เปิด/ปิดชั้นเพลงเสริม (ซิงก์กับเพลงหลักเพราะเริ่มพร้อมกันและยาวเท่ากัน)
+func layer(on: bool, fade := 0.6) -> void:
+	if on == _layer_on or _layer.stream == null:
+		return
+	_layer_on = on
+	if _layer_tween:
+		_layer_tween.kill()
+	_layer_tween = create_tween()
+	_layer_tween.tween_property(_layer, "volume_db", -6.0 if on else -60.0, fade)
 
 
 func set_volume(bus: String, linear: float) -> void:

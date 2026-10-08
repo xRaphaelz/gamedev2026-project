@@ -16,8 +16,11 @@ var _path: Array[Vector3] = []
 var _bubble: Node3D
 var _bubble_bg: Sprite3D
 var _label: Label3D
+var _face: Sprite3D
+var _mood := -1
 
 static var _circle_tex: Texture2D
+static var _face_tex := {}
 
 
 func setup(o: OrderManager.Order, s: Marker3D, spawn: Vector3) -> void:
@@ -26,6 +29,8 @@ func setup(o: OrderManager.Order, s: Marker3D, spawn: Vector3) -> void:
 	rig = CharacterRig.new()
 	rig.character = o.model
 	add_child(rig)
+	if o.reviewer:
+		rig.add_sunglasses.call_deferred()
 	position = spawn
 	var front := Vector3(s.global_position.x, 0, s.global_position.z + 1.1)
 	_path = [Vector3(front.x, 0, spawn.z), front, s.global_position]
@@ -59,6 +64,11 @@ func _process(delta: float) -> void:
 		var r := order.ratio()
 		_bubble_bg.modulate = Color(1, 1, 1).lerp(Color(1, 0.35, 0.25), 1.0 - r) if r < 0.6 else Color.WHITE
 		_bubble.position.y = 2.05 + sin(Time.get_ticks_msec() / 300.0) * 0.04
+		var m := order.mood()
+		if m != _mood:
+			_mood = m
+			_face.texture = _face_texture(m)
+			Fx.pop(_face, 1.35)
 	if _path.is_empty():
 		return
 	var target := _path[0]
@@ -105,6 +115,44 @@ func _build_bubble() -> void:
 	_bubble_bg.no_depth_test = true
 	_bubble_bg.render_priority = 2
 	_bubble.add_child(_bubble_bg)
+	# หน้าบอกอารมณ์ลูกค้า (ยิ้ม -> เฉย -> หงุดหงิด ตามเวลาที่รอ)
+	_face = Sprite3D.new()
+	_face.texture = _face_texture(2)
+	_face.pixel_size = 0.0042
+	_face.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_face.no_depth_test = true
+	_face.render_priority = 4
+	_face.position = Vector3(0.44, 0.22, 0)
+	_bubble.add_child(_face)
+	# ระดับเผ็ดที่สั่ง
+	if GameState.current_level().spice_enabled:
+		var sp := Label3D.new()
+		sp.font = THAI_FONT
+		sp.font_size = 24
+		sp.outline_size = 10
+		sp.pixel_size = 0.01
+		sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		sp.no_depth_test = true
+		sp.render_priority = 6
+		sp.outline_render_priority = 5
+		sp.modulate = Color(1, 0.35, 0.25) if order.spice > 0 else Color(0.6, 0.9, 0.5)
+		sp.text = "ไม่เผ็ด" if order.spice <= 0 else "พริก %d" % order.spice
+		sp.position = Vector3(0, -0.42, 0)
+		_bubble.add_child(sp)
+	if order.reviewer:
+		var rv := Label3D.new()
+		rv.font = THAI_FONT
+		rv.font_size = 34
+		rv.outline_size = 12
+		rv.pixel_size = 0.01
+		rv.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		rv.no_depth_test = true
+		rv.render_priority = 6
+		rv.outline_render_priority = 5
+		rv.modulate = Color(1, 0.85, 0.25)
+		rv.text = "★ นักรีวิว ★"
+		rv.position = Vector3(0, 0.5, 0)
+		_bubble.add_child(rv)
 	if order.recipe.icon:
 		var icon := Sprite3D.new()
 		icon.texture = order.recipe.icon
@@ -124,6 +172,55 @@ func _build_bubble() -> void:
 	_label.position.y = 2.1
 	_label.visible = false
 	add_child(_label)
+
+
+## ได้ทิป: เหรียญเด้งเหนือหัว
+func show_tip(tip: int, reviewer: bool) -> void:
+	if tip <= 0 and not reviewer:
+		return
+	var top := global_position + Vector3(0, 2.6, 0)
+	if tip > 0:
+		Fx.float_text(get_parent(), top, "ทิป +%d" % tip, Color(1, 0.85, 0.3), 40)
+		Fx.burst(get_parent(), global_position + Vector3(0, 1.8, 0), [Color(1, 0.82, 0.2), Color(1, 0.95, 0.55)], 12, 2.4, 0.07, true)
+		Audio.sfx("star", -8.0, 0.0)
+	if reviewer:
+		Fx.float_text(get_parent(), top + Vector3(0, 0.45, 0), "รีวิว 5 ดาว! x2", Color(1, 0.7, 0.2), 44)
+
+
+## หน้ายิ้ม/เฉย/บึ้ง วาดด้วยโค้ด (ไม่พึ่งฟอนต์อีโมจิ ซึ่งเว็บบางเครื่องไม่มี)
+static func _face_texture(m: int) -> Texture2D:
+	if _face_tex.has(m):
+		return _face_tex[m]
+	var n := 96
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	var c := Vector2(n / 2.0, n / 2.0)
+	var fill: Color = [Color(1, 0.45, 0.35), Color(1, 0.82, 0.3), Color(0.55, 0.9, 0.4)][m]
+	var ink := Color(0.25, 0.13, 0.08)
+	for y in n:
+		for x in n:
+			var p := Vector2(x + 0.5, y + 0.5)
+			var d := p.distance_to(c)
+			var col := Color(0, 0, 0, 0)
+			if d < 42:
+				col = fill
+			elif d < 46:
+				col = ink
+			# ตา
+			for ex in [-14, 14]:
+				if p.distance_to(c + Vector2(ex, -8)) < 6:
+					col = ink
+			# ปาก: ยิ้ม = โค้งลง, เฉย = เส้นตรง, บึ้ง = โค้งขึ้น
+			var mx := p.x - c.x
+			if absf(mx) < 18:
+				var t := mx / 18.0
+				var bend := 8.0 * (1.0 - t * t)
+				var my: float = [c.y + 22.0 - bend, c.y + 18.0, c.y + 14.0 + bend][m]
+				if absf(p.y - my) < 3.2:
+					col = ink
+			img.set_pixel(x, y, col)
+	var tex := ImageTexture.create_from_image(img)
+	_face_tex[m] = tex
+	return tex
 
 
 static func _circle() -> Texture2D:

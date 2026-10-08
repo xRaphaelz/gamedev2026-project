@@ -21,3 +21,9 @@ extends Resource
 @export var target_score: int = 200
 ## false = มะละกอมาแบบสับแล้ว ไม่ต้องหั่น (ใช้ในบทแรก)
 @export var require_chopping: bool = true
+## ลูกค้าสั่งระดับเผ็ด (จำนวนพริก 0–3) — ปิดไว้ในบทแรกให้เล่นง่าย
+@export var spice_enabled: bool = false
+## จำนวนเหตุการณ์สุ่มในด่าน (ทัวร์ลง ฝนตก ชั่วโมงเร่งด่วน นักรีวิว มะละกอหมด)
+@export var event_count: int = 0
+## เพลงประจำด่าน (assets/audio/music/<ชื่อ>.ogg และ <ชื่อ>_hype.ogg สำหรับตอนคอมโบสูง)
+@export var music: String = "game"

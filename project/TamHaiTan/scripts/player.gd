@@ -15,6 +15,9 @@ var rig: CharacterRig
 var _step_t := 0.0
 var _hand: Node3D
 var _body: Node3D
+var _pose_pos := Vector3.ZERO
+var _pose_yaw := 0.0
+var _pose_t := 0.0
 
 
 func _ready() -> void:
@@ -83,8 +86,16 @@ func _physics_process(delta: float) -> void:
 				Audio.sfx("step", -16.0, 0.15)
 		rig.carrying = held != null
 	if dir.length() > 0.1:
+		_pose_t = 0.0
 		var want := atan2(-dir.x, -dir.z)
 		_body.rotation.y = lerp_angle(_body.rotation.y, want, clampf(turn_speed * delta, 0, 1))
+	elif _pose_t > 0.0:
+		# ขยับเข้าจุดยืนตำ (ช่วงสั้น ๆ หลังกด Space)
+		_pose_t -= delta
+		var k := clampf(18.0 * delta, 0, 1)
+		var p := global_position.lerp(Vector3(_pose_pos.x, global_position.y, _pose_pos.z), k)
+		global_position = p
+		_body.rotation.y = lerp_angle(_body.rotation.y, _pose_yaw, k)
 
 	_update_target()
 
@@ -95,8 +106,17 @@ func _physics_process(delta: float) -> void:
 		target.refresh_status()
 	if Input.is_action_just_pressed("work") and target:
 		target.work(self)
-		if held == null and (target is MortarStation or target is ChopStation):
+		if held == null and target is MortarStation:
+			rig.pulse_work("pestle")
+		elif held == null and (target is ChopStation or (target is CrateStation and (target as CrateStation).out_of_stock)):
 			rig.pulse_work()
+
+
+## สถานีขอให้ยืนตรงจุดทำงาน (เช่น หน้าครกให้สากลงกลางครก)
+func set_work_pose(pos: Vector3, yaw: float) -> void:
+	_pose_pos = pos
+	_pose_yaw = yaw
+	_pose_t = 0.5
 
 
 func facing() -> Vector3:

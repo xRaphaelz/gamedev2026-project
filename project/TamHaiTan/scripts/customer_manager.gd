@@ -10,11 +10,13 @@ extends Node3D
 
 var _by_order := {}  # Order -> Customer
 var _taken := {}  # Marker3D -> true
+var _recent := {}  # Order -> Customer ที่เพิ่งได้อาหาร (สำหรับแสดงทิป)
 
 
 func _ready() -> void:
 	order_manager.order_added.connect(_on_added)
 	order_manager.order_removed.connect(_on_removed)
+	order_manager.served_detail.connect(_on_served)
 	order_manager.level_finished.connect(func(_a, _b, _c): _everyone_leaves())
 
 
@@ -44,7 +46,15 @@ func _on_removed(o: OrderManager.Order, served: bool) -> void:
 	if c == null:
 		return
 	_by_order.erase(o)
+	if served:
+		_recent = {o: c}
 	_release(c, served)
+
+
+func _on_served(o: OrderManager.Order, detail: Dictionary) -> void:
+	var c: Customer = _recent.get(o)
+	if c and is_instance_valid(c):
+		c.show_tip(int(detail.tip), bool(detail.reviewer))
 
 
 func _release(c: Customer, served: bool) -> void:
